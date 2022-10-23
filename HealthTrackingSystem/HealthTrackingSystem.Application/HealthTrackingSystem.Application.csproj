@@ -6,4 +6,12 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Interfaces\Infrastructure" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\HealthTrackingSystem.Domain\HealthTrackingSystem.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

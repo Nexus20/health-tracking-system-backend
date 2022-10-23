@@ -21,10 +21,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Repositories" />
-    </ItemGroup>
-    
-    <ItemGroup>
+      <ProjectReference Include="..\HealthTrackingSystem.Application\HealthTrackingSystem.Application.csproj" />
       <ProjectReference Include="..\HealthTrackingSystem.Domain\HealthTrackingSystem.Domain.csproj" />
     </ItemGroup>
 

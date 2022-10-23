@@ -1,4 +1,6 @@
-﻿using HealthTrackingSystem.Infrastructure.Persistence;
+﻿using HealthTrackingSystem.Application.Interfaces.Persistent;
+using HealthTrackingSystem.Infrastructure.Persistence;
+using HealthTrackingSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +16,8 @@ public static class InfrastructureServicesRegistration
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-        // services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
+        
+        services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
         // services.AddScoped<IOrderRepository, OrderRepository>();
         //
         // services.Configure<EmailSettings>(c => configuration.GetSection("EmailSettings"));
