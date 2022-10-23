@@ -18,7 +18,7 @@ public static class InfrastructureServicesRegistration
 
         
         services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
-        // services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IHospitalRepository, HospitalRepository>();
         //
         // services.Configure<EmailSettings>(c => configuration.GetSection("EmailSettings"));
         // services.AddTransient<IEmailService, EmailService>();

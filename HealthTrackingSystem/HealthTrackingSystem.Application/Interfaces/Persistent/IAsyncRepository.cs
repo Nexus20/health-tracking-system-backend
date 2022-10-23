@@ -1,25 +1,31 @@
 ﻿using System.Linq.Expressions;
+using HealthTrackingSystem.Domain.Entities;
 using HealthTrackingSystem.Domain.Entities.Abstract;
 
 namespace HealthTrackingSystem.Application.Interfaces.Persistent;
 
-public interface IAsyncRepository<T> where T : BaseEntity
+public interface IHospitalRepository : IAsyncRepository<Hospital>
 {
-    Task<List<T>> GetAllAsync();
-    Task<List<T>> GetAsync(Expression<Func<T, bool>> predicate);
+    
+}
 
-    Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+public interface IAsyncRepository<TEntity> where TEntity : BaseEntity
+{
+    Task<List<TEntity>> GetAllAsync();
+    Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate);
+
+    Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         string? includeString = null,
         bool disableTracking = true);
 
-    Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>>? predicate = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        List<Expression<Func<T, object>>>? includes = null,
+    Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        List<Expression<Func<TEntity, object>>>? includes = null,
         bool disableTracking = true);
 
-    Task<T?> GetByIdAsync(int id);
-    Task<T> AddAsync(T entity);
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(T entity);
+    Task<TEntity?> GetByIdAsync(string id);
+    Task<TEntity> AddAsync(TEntity entity);
+    Task UpdateAsync(TEntity entity);
+    Task DeleteAsync(TEntity entity);
 }
