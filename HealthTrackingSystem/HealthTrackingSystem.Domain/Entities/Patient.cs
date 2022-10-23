@@ -10,6 +10,9 @@ public class Patient : BaseEntity
     public string? DoctorId { get; set; }
     public Doctor? Doctor { get; set; }
     
+    public string? PatientCaretakerId { get; set; }
+    public PatientCaretaker? PatientCaretaker { get; set; }
+    
     public string HospitalId { get; set; } = null!;
     public Hospital Hospital { get; set; } = null!;
     

@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string, 
     public DbSet<Hospital> Hospitals { get; set; }
     public DbSet<HospitalAdministrator> HospitalAdministrators { get; set; }
     public DbSet<HealthMeasurement> HealthMeasurements { get; set; }
+    public DbSet<PatientCaretaker> PatientCaretakers { get; set; }
     
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
@@ -57,6 +58,6 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string, 
     {
         base.OnModelCreating(builder);
 
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(ApplicationDbContext)));
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(ApplicationDbContext))!);
     }
 }

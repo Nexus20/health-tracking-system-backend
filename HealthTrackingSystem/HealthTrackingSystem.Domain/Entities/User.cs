@@ -13,5 +13,6 @@ public class User : BaseEntity
     
     public Doctor? Doctor { get; set; }
     public Patient? Patient { get; set; }
+    public PatientCaretaker? PatientCaretaker { get; set; }
     public HospitalAdministrator? HospitalAdministrator { get; set; }
 }

@@ -23,3 +23,18 @@ internal class DoctorConfiguration : IEntityTypeConfiguration<Doctor>
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+internal class PatientCaretakerConfiguration : IEntityTypeConfiguration<PatientCaretaker>
+{
+    public void Configure(EntityTypeBuilder<PatientCaretaker> builder)
+    {
+        builder.HasOne(x => x.User)
+            .WithOne(x => x.PatientCaretaker)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(x => x.Patients)
+            .WithOne(x => x.PatientCaretaker)
+            .HasForeignKey(x => x.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
