@@ -1,13 +1,27 @@
 using System.Text;
+using HealthTrackingSystem.API.Extensions;
 using HealthTrackingSystem.API.Middlewares;
 using HealthTrackingSystem.Application;
 using HealthTrackingSystem.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .Enrich.WithProperty("Application", "Health tracking system")
+    .CreateBootstrapLogger();
+
+Log.Information("Starting up");
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Host.UseSerilog((context, config) => config
+    .WriteTo.Console()
+    .ReadFrom.Configuration(context.Configuration));
+
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
@@ -40,6 +54,7 @@ builder.Services.AddAuthentication(opt => {
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
@@ -55,5 +70,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.SetupIdentity();
 
 app.Run();

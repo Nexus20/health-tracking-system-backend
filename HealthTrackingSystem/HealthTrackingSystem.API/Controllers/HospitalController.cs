@@ -25,10 +25,19 @@ public class HospitalController : ControllerBase
     }
     
     [HttpGet(Name = "GetHospitals")]
-    [ProducesResponseType(typeof(IEnumerable<HospitalResult>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<HospitalResult>>> Get([FromQuery]GetHospitalsRequest request)
+    [ProducesResponseType(typeof(List<HospitalResult>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<HospitalResult>>> Get([FromQuery]GetHospitalsRequest request)
     {
         var hospitals = await _hospitalService.GetAsync(request);
         return Ok(hospitals);
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(typeof(HospitalResult), StatusCodes.Status201Created)]
+    public async Task<IActionResult> Post([FromBody] CreateHospitalRequest request)
+    {
+        var result = await _hospitalService.CreateAsync(request);
+
+        return StatusCode(StatusCodes.Status201Created, result);
     }
 }

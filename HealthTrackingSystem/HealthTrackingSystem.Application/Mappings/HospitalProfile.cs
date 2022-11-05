@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HealthTrackingSystem.Application.Models.Requests.Hospitals;
 using HealthTrackingSystem.Application.Models.Results.Hospitals;
 using HealthTrackingSystem.Domain.Entities;
 
@@ -9,5 +10,6 @@ public class HospitalProfile : Profile
     public HospitalProfile()
     {
         CreateMap<Hospital, HospitalResult>();
+        CreateMap<CreateHospitalRequest, Hospital>();
     }
 }

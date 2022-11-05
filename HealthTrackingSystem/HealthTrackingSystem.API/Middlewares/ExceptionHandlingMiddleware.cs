@@ -9,27 +9,35 @@ namespace HealthTrackingSystem.API.Middlewares {
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context) {
+        public async Task InvokeAsync(HttpContext context, Serilog.ILogger logger) {
             try
             {
                 await _next(context);
             }
-            catch (EntityNotFoundException exception)
+            catch (ValidationException exception)
             {
-                // logger.LogError(exception, "An exception was thrown as a result of the request");
+                logger.Information(exception, "Validation exception is occured");
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            }
+            catch (IdentityException exception)
+            {
+                logger.Information(exception, "Identity exception is occured");
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            }
+            catch (NotFoundException exception)
+            {
+                logger.Information(exception, "Resource not found");
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
             }
             catch (Exception exception) {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsync(exception.ToString());
-                // HandleException(context, exception, logger);
+                HandleStatus500Exception(context, exception, logger);
             }
         }
 
-        // private void HandleException(HttpContext context, Exception exception, ILogger logger) {
-        //
-        //     logger.LogError(exception, "An exception was thrown as a result of the request");
-        //     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        // }
+        private void HandleStatus500Exception(HttpContext context, Exception exception, Serilog.ILogger logger) {
+
+            logger.Error(exception, "An exception was thrown as a result of the request");
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        }
     }
 }

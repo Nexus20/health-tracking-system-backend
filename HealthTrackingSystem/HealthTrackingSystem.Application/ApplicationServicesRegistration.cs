@@ -11,6 +11,7 @@ public static class ApplicationServicesRegistration
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<IHospitalService, HospitalService>();
+        services.AddScoped<IDoctorService, DoctorService>();
 
         return services;
     }

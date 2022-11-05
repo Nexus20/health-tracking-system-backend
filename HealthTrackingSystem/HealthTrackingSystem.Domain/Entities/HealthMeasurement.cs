@@ -8,5 +8,5 @@ public class HealthMeasurement : BaseEntity
     public int HeartRate { get; set; }
     
     public string PatientId { get; set; } = null!;
-    public Patient Patient { get; set; } = null!;
+    public virtual Patient Patient { get; set; } = null!;
 }

@@ -4,5 +4,12 @@ namespace HealthTrackingSystem.Infrastructure.Identity;
 
 public class AppRole : IdentityRole
 {
-    public List<AppUserRole> UserRoles { get; set; }
+    public AppRole()
+    {
+        
+    }
+    
+    public AppRole(string roleName) : base(roleName) { }
+    
+    public virtual List<AppUserRole> UserRoles { get; set; }
 }

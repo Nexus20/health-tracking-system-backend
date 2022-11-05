@@ -7,7 +7,7 @@ public interface IHospitalService
 {
     public Task<HospitalResult> GetByIdAsync(string id);
     public Task<List<HospitalResult>> GetAsync(GetHospitalsRequest request);
-    public Task<HospitalResult> CreateHospitalAsync(CreateHospitalRequest request);
-    public Task<HospitalResult> UpdateHospitalAsync(UpdateHospitalRequest request);
-    public Task DeleteHospitalAsync(string id);
+    public Task<HospitalResult> CreateAsync(CreateHospitalRequest request);
+    public Task<HospitalResult> UpdateAsync(UpdateHospitalRequest request);
+    public Task DeleteAsync(string id);
 }

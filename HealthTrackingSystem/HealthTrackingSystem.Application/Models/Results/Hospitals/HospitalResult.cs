@@ -1,6 +1,9 @@
-﻿namespace HealthTrackingSystem.Application.Models.Results.Hospitals;
+﻿using HealthTrackingSystem.Application.Models.Results.Abstract;
 
-public class HospitalResult
+namespace HealthTrackingSystem.Application.Models.Results.Hospitals;
+
+public class HospitalResult : BaseResult
 {
-    
+    public string Name { get; set; } = null!;
+    public string Address { get; set; } = null!;
 }

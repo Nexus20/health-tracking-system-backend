@@ -20,12 +20,15 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         return DbContext.Set<TEntity>().ToListAsync();
     }
 
-    public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate)
+    public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null)
     {
+        if (predicate == null)
+            return GetAllAsync();
+        
         return DbContext.Set<TEntity>().Where(predicate).ToListAsync();
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
+    public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string? includeString = null,
         bool disableTracking = true)
     {
@@ -37,11 +40,11 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         if (predicate != null) query = query.Where(predicate);
 
         if (orderBy != null)
-            return await orderBy(query).ToListAsync();
-        return await query.ToListAsync();
+            return orderBy(query).ToListAsync();
+        return query.ToListAsync();
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
+    public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, List<Expression<Func<TEntity, object>>>? includes = null,
         bool disableTracking = true)
     {
@@ -53,8 +56,13 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         if (predicate != null) query = query.Where(predicate);
 
         if (orderBy != null)
-            return await orderBy(query).ToListAsync();
-        return await query.ToListAsync();
+            return orderBy(query).ToListAsync();
+        return query.ToListAsync();
+    }
+
+    public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return DbContext.Set<TEntity>().AnyAsync(predicate);
     }
 
     public virtual Task<TEntity?> GetByIdAsync(string id)

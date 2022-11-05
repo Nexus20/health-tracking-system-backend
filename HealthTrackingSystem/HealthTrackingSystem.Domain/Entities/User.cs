@@ -11,8 +11,8 @@ public class User : BaseEntity
     public string Email { get; set; } = null!;
     public DateTime BirthDate { get; set; }
     
-    public Doctor? Doctor { get; set; }
-    public Patient? Patient { get; set; }
-    public PatientCaretaker? PatientCaretaker { get; set; }
-    public HospitalAdministrator? HospitalAdministrator { get; set; }
+    public virtual Doctor? Doctor { get; set; }
+    public virtual Patient? Patient { get; set; }
+    public virtual PatientCaretaker? PatientCaretaker { get; set; }
+    public virtual HospitalAdministrator? HospitalAdministrator { get; set; }
 }
