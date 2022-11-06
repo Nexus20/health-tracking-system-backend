@@ -33,10 +33,10 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string, 
         return base.SaveChanges();
     }
 
-    public Task<int> SaveChangesAsync()
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         AddInfoBeforeUpdate();
-        return base.SaveChangesAsync();
+        return base.SaveChangesAsync(cancellationToken);
     }
 
     private void AddInfoBeforeUpdate()

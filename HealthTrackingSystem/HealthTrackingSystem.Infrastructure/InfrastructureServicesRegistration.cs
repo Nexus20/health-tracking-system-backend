@@ -35,6 +35,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IHospitalRepository, HospitalRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IHospitalAdministratorRepository, HospitalAdministratorRepository>();
         
         services.AddScoped<IIdentityInitializer, IdentityInitializer>();
         //
