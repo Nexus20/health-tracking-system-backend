@@ -34,6 +34,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
         services.AddScoped<IHospitalRepository, HospitalRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
         
         services.AddScoped<IIdentityInitializer, IdentityInitializer>();
         //

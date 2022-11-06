@@ -3,70 +3,67 @@ using AutoMapper;
 using HealthTrackingSystem.Application.Exceptions;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
-using HealthTrackingSystem.Application.Models.Requests.Doctors;
-using HealthTrackingSystem.Application.Models.Results.Doctors;
+using HealthTrackingSystem.Application.Models.Requests.Patients;
+using HealthTrackingSystem.Application.Models.Results.Patients;
 using HealthTrackingSystem.Domain.Entities;
 
 namespace HealthTrackingSystem.Application.Services;
 
-public class DoctorService : IDoctorService
+public class PatientService : IPatientService
 {
-    private readonly IDoctorRepository _doctorRepository;
+    private readonly IPatientRepository _patientRepository;
     private readonly IHospitalRepository _hospitalRepository;
     private readonly IMapper _mapper;
     private readonly Serilog.ILogger _logger;
 
-    public DoctorService(IDoctorRepository doctorRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository)
+    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository)
     {
-        _doctorRepository = doctorRepository;
+        _patientRepository = patientRepository;
         _mapper = mapper;
         _logger = logger;
         _hospitalRepository = hospitalRepository;
     }
 
-    public async Task<DoctorResult> GetByIdAsync(string id)
+    public async Task<PatientResult> GetByIdAsync(string id)
     {
-        var source = await _doctorRepository.GetByIdAsync(id);
+        var result = await _patientRepository.GetByIdAsync<PatientResult>(id);
 
-        if (source == null)
+        if (result == null)
         {
-            throw new NotFoundException($"Doctor with id \"{id}\" not found");
+            throw new NotFoundException($"Patient with id \"{id}\" not found");
         }
 
-        return _mapper.Map<Doctor, DoctorResult>(source);
+        return result;
     }
 
-    public async Task<List<DoctorResult>> GetAsync(GetDoctorsRequest request)
+    public async Task<List<PatientResult>> GetAsync(GetPatientsRequest request)
     {
         var predicate = CreateFilterPredicate(request);
-        var source = await _doctorRepository.GetAsync(predicate);
-
-        return _mapper.Map<List<Doctor>, List<DoctorResult>>(source);
+        var result = await _patientRepository.GetAsync<PatientResult>(predicate);
+        return result;
     }
     
-    public async Task<DoctorResult> CreateAsync(CreateDoctorRequest request)
+    public async Task<PatientResult> CreateAsync(CreatePatientRequest request)
     {
         if (!await _hospitalRepository.ExistsAsync(x => x.Id == request.HospitalId))
             throw new ValidationException($"Hospital with id {request.HospitalId} doesn't exist");
 
-        var doctorExists = await _doctorRepository.ExistsAsync(x => x.User.FirstName == request.FirstName
+        var patientExists = await _patientRepository.ExistsAsync(x => x.User.FirstName == request.FirstName
                                                                     && x.User.LastName == request.LastName
                                                                     && x.User.Patronymic == request.Patronymic
                                                                     && x.User.Phone == request.Phone);
 
-        if (doctorExists)
-            throw new ValidationException("Doctor with such parameters already exists");
+        if (patientExists)
+            throw new ValidationException("Patient with such parameters already exists");
         
-        // var userEntity = _mapper.Map<CreateDoctorRequest, User>(request);
-        var doctorEntity = _mapper.Map<CreateDoctorRequest, Doctor>(request);
-        // doctorEntity.UserId = userEntity.Id;
-        await _doctorRepository.AddAsync(doctorEntity, doctorEntity.User, request.Password);
-        _logger.Information("New Doctor {@Entity} was created successfully", doctorEntity);
-        var result = _mapper.Map<Doctor, DoctorResult>(doctorEntity); 
+        var patientEntity = _mapper.Map<CreatePatientRequest, Patient>(request);
+        await _patientRepository.AddAsync(patientEntity, patientEntity.User, request.Password);
+        _logger.Information("New Patient {@Entity} was created successfully", patientEntity);
+        var result = _mapper.Map<Patient, PatientResult>(patientEntity); 
         return result;
     }
 
-    public Task<DoctorResult> UpdateAsync(UpdateDoctorRequest request)
+    public Task<PatientResult> UpdateAsync(UpdatePatientRequest request)
     {
         throw new NotImplementedException();
     }
@@ -76,9 +73,9 @@ public class DoctorService : IDoctorService
         throw new NotImplementedException();
     }
     
-    private Expression<Func<Doctor, bool>>? CreateFilterPredicate(GetDoctorsRequest request)
+    private Expression<Func<Patient, bool>>? CreateFilterPredicate(GetPatientsRequest request)
     {
-        Expression<Func<Doctor, bool>>? predicate = null;
+        Expression<Func<Patient, bool>>? predicate = null;
 
         // if (!string.IsNullOrWhiteSpace(request.SearchString))
         // {
