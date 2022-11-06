@@ -1,5 +1,8 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
+using HealthTrackingSystem.Application.Models.Results.Abstract;
 using HealthTrackingSystem.Domain.Entities.Abstract;
 using HealthTrackingSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +11,13 @@ namespace HealthTrackingSystem.Infrastructure.Repositories;
 
 public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity : BaseEntity
 {
+    protected readonly IMapper Mapper;
     protected readonly ApplicationDbContext DbContext;
 
-    public RepositoryBase(ApplicationDbContext dbContext)
+    public RepositoryBase(ApplicationDbContext dbContext, IMapper mapper)
     {
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        Mapper = mapper;
     }
 
     public Task<List<TEntity>> GetAllAsync()
@@ -60,6 +65,22 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         return query.ToListAsync();
     }
 
+    public Task<List<TResult>> GetAsync<TResult>(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, List<Expression<Func<TEntity, object>>>? includes = null,
+        bool disableTracking = true) where TResult : BaseResult
+    {
+        IQueryable<TEntity> query = DbContext.Set<TEntity>();
+        if (disableTracking) query = query.AsNoTracking();
+
+        if (includes != null) query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+        if (predicate != null) query = query.Where(predicate);
+
+        if (orderBy != null)
+            query = orderBy(query);
+
+        return query.ProjectTo<TResult>(Mapper.ConfigurationProvider).ToListAsync();
+    }
+
     public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
     {
         return DbContext.Set<TEntity>().AnyAsync(predicate);
@@ -67,7 +88,14 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
 
     public virtual Task<TEntity?> GetByIdAsync(string id)
     {
-        return DbContext.Set<TEntity>().FindAsync(id).AsTask();
+        return DbContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+    }
+    
+    public virtual Task<TResult?> GetByIdAsync<TResult>(string id) where TResult : BaseResult
+    {
+        return DbContext.Set<TEntity>()
+            .ProjectTo<TResult>(Mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<TEntity> AddAsync(TEntity entity)

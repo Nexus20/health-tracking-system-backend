@@ -34,12 +34,10 @@ public class HospitalService : IHospitalService
         return _mapper.Map<Hospital, HospitalResult>(source);
     }
 
-    public async Task<List<HospitalResult>> GetAsync(GetHospitalsRequest request)
+    public Task<List<HospitalResult>> GetAsync(GetHospitalsRequest request)
     {
         var predicate = CreateFilterPredicate(request);
-        var source = await _hospitalRepository.GetAsync(predicate);
-
-        return _mapper.Map<List<Hospital>, List<HospitalResult>>(source);
+        return _hospitalRepository.GetAsync<HospitalResult>(predicate);
     }
 
     public async Task<HospitalResult> CreateAsync(CreateHospitalRequest request)

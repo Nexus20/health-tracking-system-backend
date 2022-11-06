@@ -12,16 +12,14 @@ namespace HealthTrackingSystem.Infrastructure.Repositories;
 
 public class DoctorRepository : RepositoryBase<Doctor>, IDoctorRepository
 {
-    private readonly IMapper _mapper;
     private readonly ILogger<DoctorRepository> _logger;
     private readonly UserManager<AppUser> _userManager;
 
     public DoctorRepository(ApplicationDbContext dbContext, ILogger<DoctorRepository> logger,
-        UserManager<AppUser> userManager, IMapper mapper) : base(dbContext)
+        UserManager<AppUser> userManager, IMapper mapper) : base(dbContext, mapper)
     {
         _logger = logger;
         _userManager = userManager;
-        _mapper = mapper;
     }
 
     public async Task AddAsync(Doctor doctorEntity, User userEntity, string password)
@@ -31,7 +29,7 @@ public class DoctorRepository : RepositoryBase<Doctor>, IDoctorRepository
         {
             await DbContext.DomainUsers.AddAsync(userEntity);
             await DbContext.Doctors.AddAsync(doctorEntity);
-            var appUser = _mapper.Map<User, AppUser>(userEntity);
+            var appUser = Mapper.Map<User, AppUser>(userEntity);
 
             var identityResult = await _userManager.CreateAsync(appUser, password);
 
