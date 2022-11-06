@@ -9,4 +9,5 @@ public static class CustomRoles
     public const string Doctor = "Doctor";
     public const string Patient = "Patient";
     public const string HospitalAdministrator = "HospitalAdministrator";
+    public const string PatientCaretaker = "PatientCaretaker";
 }

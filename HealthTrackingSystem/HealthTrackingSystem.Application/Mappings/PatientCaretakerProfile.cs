@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
-using HealthTrackingSystem.Application.Models.Requests.HospitalAdministrators;
-using HealthTrackingSystem.Application.Models.Results.HospitalAdministrators;
+using HealthTrackingSystem.Application.Models.Requests.PatientCaretakers;
+using HealthTrackingSystem.Application.Models.Results.PatientCaretakers;
 using HealthTrackingSystem.Domain.Entities;
 
 namespace HealthTrackingSystem.Application.Mappings;
 
-public class HospitalAdministratorProfile : Profile
+public class PatientCaretakerProfile : Profile
 {
-    public HospitalAdministratorProfile()
+    public PatientCaretakerProfile()
     {
-        CreateMap<CreateHospitalAdministratorRequest, HospitalAdministrator>()
+        CreateMap<CreatePatientCaretakerRequest, PatientCaretaker>()
             .ForMember(x => x.User, o => o.MapFrom(s => s));
-        CreateMap<CreateHospitalAdministratorRequest, User>();
+        CreateMap<CreatePatientCaretakerRequest, User>();
 
-        CreateMap<HospitalAdministrator, HospitalAdministratorResult>()
+        CreateMap<PatientCaretaker, PatientCaretakerResult>()
             .ForMember(x => x.BirthDate, o => o.MapFrom(s => s.User.BirthDate))
             .ForMember(x => x.Email, o => o.MapFrom(s => s.User.Email))
             .ForMember(x => x.Phone, o => o.MapFrom(s => s.User.Phone))

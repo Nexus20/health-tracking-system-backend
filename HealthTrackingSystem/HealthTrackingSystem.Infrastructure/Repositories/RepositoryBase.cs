@@ -29,7 +29,7 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
     {
         if (predicate == null)
             return GetAllAsync();
-        
+
         return DbContext.Set<TEntity>().Where(predicate).ToListAsync();
     }
 
@@ -50,7 +50,8 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
     }
 
     public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, List<Expression<Func<TEntity, object>>>? includes = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        List<Expression<Func<TEntity, BaseEntity>>>? includes = null,
         bool disableTracking = true)
     {
         IQueryable<TEntity> query = DbContext.Set<TEntity>();
@@ -65,7 +66,9 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         return query.ToListAsync();
     }
 
-    public Task<List<TResult>> GetAsync<TResult>(Expression<Func<TEntity, bool>>? predicate = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, List<Expression<Func<TEntity, object>>>? includes = null,
+    public virtual Task<List<TResult>> GetAsync<TResult>(Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        List<Expression<Func<TEntity, BaseEntity>>>? includes = null,
         bool disableTracking = true) where TResult : BaseResult
     {
         IQueryable<TEntity> query = DbContext.Set<TEntity>();
@@ -86,11 +89,19 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         return DbContext.Set<TEntity>().AnyAsync(predicate);
     }
 
+    public Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate)
+    {
+        if (predicate == null)
+            return DbContext.Set<TEntity>().CountAsync();
+
+        return DbContext.Set<TEntity>().CountAsync(predicate);
+    }
+
     public virtual Task<TEntity?> GetByIdAsync(string id)
     {
         return DbContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
     }
-    
+
     public virtual Task<TResult?> GetByIdAsync<TResult>(string id) where TResult : BaseResult
     {
         return DbContext.Set<TEntity>()

@@ -14,6 +14,7 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IDoctorService, DoctorService>();
         services.AddScoped<IPatientService, PatientService>();
         services.AddScoped<IHospitalAdministratorService, HospitalAdministratorService>();
+        services.AddScoped<IPatientCaretakerService, PatientCaretakerService>();
 
         return services;
     }

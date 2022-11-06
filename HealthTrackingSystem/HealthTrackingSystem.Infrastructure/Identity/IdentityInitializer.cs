@@ -24,6 +24,7 @@ public class IdentityInitializer : IIdentityInitializer
         RegisterRoleAsync(CustomRoles.Doctor).Wait();
         RegisterRoleAsync(CustomRoles.Patient).Wait();
         RegisterRoleAsync(CustomRoles.HospitalAdministrator).Wait();
+        RegisterRoleAsync(CustomRoles.PatientCaretaker).Wait();
     }
     
     private async Task<AppRole> RegisterRoleAsync(string roleName)

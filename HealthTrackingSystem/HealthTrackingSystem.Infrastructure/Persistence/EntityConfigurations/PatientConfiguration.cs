@@ -21,5 +21,10 @@ internal class PatientConfiguration : IEntityTypeConfiguration<Patient>
             .WithOne(x => x.Patient)
             .HasForeignKey(x => x.PatientId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.PatientCaretaker)
+            .WithMany(x => x.Patients)
+            .HasForeignKey(x => x.PatientCaretakerId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
