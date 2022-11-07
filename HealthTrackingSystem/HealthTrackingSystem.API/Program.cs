@@ -1,5 +1,6 @@
 using System.Text;
 using HealthTrackingSystem.API.Extensions;
+using HealthTrackingSystem.API.HostedServices;
 using HealthTrackingSystem.API.Middlewares;
 using HealthTrackingSystem.Application;
 using HealthTrackingSystem.Infrastructure;
@@ -21,6 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, config) => config
     .WriteTo.Console()
     .ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddHostedService<MqttSubscriberHostedService>();
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);

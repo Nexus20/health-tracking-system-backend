@@ -10,4 +10,6 @@ public interface IPatientService
     public Task<PatientResult> CreateAsync(CreatePatientRequest request);
     public Task<PatientResult> UpdateAsync(UpdatePatientRequest request);
     public Task DeleteAsync(string id);
+
+    public Task CreateIotDeviceSubscriberForPatientAsync(string id);
 }

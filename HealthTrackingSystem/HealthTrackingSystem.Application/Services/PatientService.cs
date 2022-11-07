@@ -5,6 +5,7 @@ using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Patients;
 using HealthTrackingSystem.Application.Models.Results.Patients;
+using HealthTrackingSystem.Application.Mqtt;
 using HealthTrackingSystem.Domain.Entities;
 
 namespace HealthTrackingSystem.Application.Services;
@@ -15,13 +16,15 @@ public class PatientService : IPatientService
     private readonly IHospitalRepository _hospitalRepository;
     private readonly IMapper _mapper;
     private readonly Serilog.ILogger _logger;
+    private readonly IMqttSubscribersPool _mqttSubscribersPool;
 
-    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository)
+    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository, IMqttSubscribersPool mqttSubscribersPool)
     {
         _patientRepository = patientRepository;
         _mapper = mapper;
         _logger = logger;
         _hospitalRepository = hospitalRepository;
+        _mqttSubscribersPool = mqttSubscribersPool;
     }
 
     public async Task<PatientResult> GetByIdAsync(string id)
@@ -72,7 +75,14 @@ public class PatientService : IPatientService
     {
         throw new NotImplementedException();
     }
-    
+
+    public async Task CreateIotDeviceSubscriberForPatientAsync(string id)
+    {
+        _mqttSubscribersPool.AddNewSubscriber(id);
+        await _mqttSubscribersPool.ConnectOneAsync(id);
+        _logger.Information("IoT device subscriber for patient {Id} connected successfully", id);
+    }
+
     private Expression<Func<Patient, bool>>? CreateFilterPredicate(GetPatientsRequest request)
     {
         Expression<Func<Patient, bool>>? predicate = null;

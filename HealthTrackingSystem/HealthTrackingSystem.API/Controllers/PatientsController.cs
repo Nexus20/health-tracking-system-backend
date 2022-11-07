@@ -40,6 +40,14 @@ namespace HealthTrackingSystem.API.Controllers
 
             return StatusCode(StatusCodes.Status201Created, result);
         }
+        
+        [HttpGet("{id}/[action]", Name = "SubscribePatientToIotDevice")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> SubscribePatientToIotDevice(string id)
+        {
+            await _patientService.CreateIotDeviceSubscriberForPatientAsync(id);
+            return StatusCode(StatusCodes.Status204NoContent);
+        }
 
         // PUT: api/Patients/5
         [HttpPut("{id}")]

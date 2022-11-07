@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HealthTrackingSystem.Application.Interfaces.Infrastructure;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
+using HealthTrackingSystem.Application.Mqtt;
 using HealthTrackingSystem.Infrastructure.Identity;
 using HealthTrackingSystem.Infrastructure.Persistence;
 using HealthTrackingSystem.Infrastructure.Repositories;
@@ -42,6 +43,8 @@ public static class InfrastructureServicesRegistration
         //
         // services.Configure<EmailSettings>(c => configuration.GetSection("EmailSettings"));
         // services.AddTransient<IEmailService, EmailService>();
+
+        services.AddSingleton<IMqttSubscribersPool, MqttSubscribersPool>();
 
         return services;
     }
