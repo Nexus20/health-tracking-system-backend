@@ -16,15 +16,15 @@ public class PatientService : IPatientService
     private readonly IHospitalRepository _hospitalRepository;
     private readonly IMapper _mapper;
     private readonly Serilog.ILogger _logger;
-    private readonly IMqttSubscribersPool _mqttSubscribersPool;
+    private readonly IIotSubscribersPool _iotSubscribersPool;
 
-    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository, IMqttSubscribersPool mqttSubscribersPool)
+    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository, IIotSubscribersPool iotSubscribersPool)
     {
         _patientRepository = patientRepository;
         _mapper = mapper;
         _logger = logger;
         _hospitalRepository = hospitalRepository;
-        _mqttSubscribersPool = mqttSubscribersPool;
+        _iotSubscribersPool = iotSubscribersPool;
     }
 
     public async Task<PatientResult> GetByIdAsync(string id)
@@ -78,8 +78,8 @@ public class PatientService : IPatientService
 
     public async Task CreateIotDeviceSubscriberForPatientAsync(string id)
     {
-        _mqttSubscribersPool.AddNewSubscriber(id);
-        await _mqttSubscribersPool.ConnectOneAsync(id);
+        _iotSubscribersPool.AddNewSubscriber(id);
+        await _iotSubscribersPool.ConnectOneAsync(id);
         _logger.Information("IoT device subscriber for patient {Id} connected successfully", id);
     }
 

@@ -23,7 +23,7 @@ builder.Host.UseSerilog((context, config) => config
     .WriteTo.Console()
     .ReadFrom.Configuration(context.Configuration));
 
-builder.Services.AddHostedService<MqttSubscriberHostedService>();
+builder.Services.AddHostedService<IotSubscriberHostedService>();
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);

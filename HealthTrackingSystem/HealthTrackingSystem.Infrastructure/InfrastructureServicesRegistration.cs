@@ -44,7 +44,7 @@ public static class InfrastructureServicesRegistration
         // services.Configure<EmailSettings>(c => configuration.GetSection("EmailSettings"));
         // services.AddTransient<IEmailService, EmailService>();
 
-        services.AddSingleton<IMqttSubscribersPool, MqttSubscribersPool>();
+        services.AddSingleton<IIotSubscribersPool, MqttSubscribersPool>();
 
         return services;
     }

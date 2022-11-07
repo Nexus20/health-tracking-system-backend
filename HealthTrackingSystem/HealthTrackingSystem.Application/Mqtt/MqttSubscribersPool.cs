@@ -11,7 +11,7 @@ using Serilog;
 
 namespace HealthTrackingSystem.Application.Mqtt;
 
-public class MqttSubscribersPool : IMqttSubscribersPool
+public class MqttSubscribersPool : IIotSubscribersPool
 {
     private readonly List<MqttPatientSubscriber> _subscribers = new();
     private readonly IServiceProvider _serviceProvider;

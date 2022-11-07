@@ -1,6 +1,6 @@
 namespace HealthTrackingSystem.Application.Mqtt;
 
-public interface IMqttSubscribersPool
+public interface IIotSubscribersPool
 {
     Task InitSubscribersForPatientsAsync();
     Task ConnectAllAsync();

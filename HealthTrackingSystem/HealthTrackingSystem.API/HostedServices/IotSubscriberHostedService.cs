@@ -3,12 +3,12 @@ using ILogger = Serilog.ILogger;
 
 namespace HealthTrackingSystem.API.HostedServices;
 
-public class MqttSubscriberHostedService : BackgroundService
+public class IotSubscriberHostedService : BackgroundService
 {
     private readonly ILogger _logger;
-    private readonly IMqttSubscribersPool _mqttSubscribersPool;
+    private readonly IIotSubscribersPool _mqttSubscribersPool;
 
-    public MqttSubscriberHostedService(ILogger logger, IMqttSubscribersPool mqttSubscribersPool)
+    public IotSubscriberHostedService(ILogger logger, IIotSubscribersPool mqttSubscribersPool)
     {
         _logger = logger;
         _mqttSubscribersPool = mqttSubscribersPool;
