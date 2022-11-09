@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using HealthTrackingSystem.Application.Interfaces.Infrastructure;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
+using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Mqtt;
+using HealthTrackingSystem.Infrastructure.Auth;
 using HealthTrackingSystem.Infrastructure.Identity;
 using HealthTrackingSystem.Infrastructure.Persistence;
 using HealthTrackingSystem.Infrastructure.Repositories;
@@ -40,6 +42,8 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IPatientCaretakerRepository, PatientCaretakerRepository>();
         
         services.AddScoped<IIdentityInitializer, IdentityInitializer>();
+        services.AddScoped<ISignInService, SignInService>();
+        services.AddScoped<JwtHandler>();
         //
         // services.Configure<EmailSettings>(c => configuration.GetSection("EmailSettings"));
         // services.AddTransient<IEmailService, EmailService>();

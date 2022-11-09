@@ -6,7 +6,6 @@ using HealthTrackingSystem.Application.Exceptions;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Models.Results.PatientCaretakers;
 using HealthTrackingSystem.Domain.Entities;
-using HealthTrackingSystem.Domain.Entities.Abstract;
 using HealthTrackingSystem.Infrastructure.Identity;
 using HealthTrackingSystem.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
