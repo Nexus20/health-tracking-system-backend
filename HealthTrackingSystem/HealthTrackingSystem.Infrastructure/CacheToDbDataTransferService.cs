@@ -36,6 +36,7 @@ public class CacheToDbDataTransferService : ICacheToDbDataTransferService
                 .Select(x => x.ToString())
                 .Where(x => x.StartsWith("{"))
                 .Select(JsonConvert.DeserializeObject<HealthMeasurementDto>)
+                .Where(x => x != null)
                 .Select(x => new HealthMeasurement()
                 {
                     CreatedDate = x.DateTime,
