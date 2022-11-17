@@ -1,13 +1,21 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
+using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
+using HealthTrackingSystem.Application.Models.Dtos;
 using HealthTrackingSystem.Application.Models.Requests.Patients;
 using HealthTrackingSystem.Application.Models.Results.Patients;
+using HealthTrackingSystem.Domain.Entities;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using MQTTnet.Extensions.ManagedClient;
+using Newtonsoft.Json;
 using Serilog;
+using StackExchange.Redis;
 
 namespace HealthTrackingSystem.Application.Mqtt;
 
@@ -17,12 +25,16 @@ public class MqttSubscribersPool : IIotSubscribersPool
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger _logger;
     private readonly IConfiguration _configuration;
+    private readonly IDistributedCache _redisCache;
+    private readonly IConnectionMultiplexer _redis;
 
-    public MqttSubscribersPool(IServiceProvider serviceProvider, IConfiguration configuration, ILogger logger)
+    public MqttSubscribersPool(IServiceProvider serviceProvider, IConfiguration configuration, ILogger logger, IDistributedCache redisCache, IConnectionMultiplexer redis)
     {
         _serviceProvider = serviceProvider;
         _configuration = configuration;
         _logger = logger;
+        _redisCache = redisCache;
+        _redis = redis;
     }
     
     public async Task InitSubscribersForPatientsAsync()
@@ -111,9 +123,31 @@ public class MqttSubscribersPool : IIotSubscribersPool
             _logger.Information("Mqtt subscriber for patient {PatientId} disconnected", patientId);
         });
 
-        mqttClient.UseApplicationMessageReceivedHandler(e =>
+        mqttClient.UseApplicationMessageReceivedHandler(async e =>
         {
             _logger.Information("Message from subscriber with patient id {PatientId}: {Payload}", patientId, Encoding.UTF8.GetString(e.ApplicationMessage.Payload));
+            var stringPayload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            var healthMeasurementDto = JsonConvert.DeserializeObject<HealthMeasurementDto>(stringPayload);
+
+            // _redis.GetDatabase().SetAdd(new RedisKey(patientId), new RedisValue(stringPayload));
+            await _redis.GetDatabase().SetAddAsync($"patient:{patientId}", stringPayload);
+            // using (var scope = _serviceProvider.CreateScope())
+            // {
+            //     var healthMeasurementRepository = scope.ServiceProvider.GetRequiredService<IMongoHealthMeasurementRepository>();
+            //     
+            //     var mongoHealthMeasurement = new MongoHealthMeasurement()
+            //     {
+            //         Ecg = healthMeasurementDto.Ecg,
+            //         HeartRate = healthMeasurementDto.HeartRate,
+            //         CreatedDate = healthMeasurementDto.DateTime,
+            //         PatientId = patientId
+            //     };
+            //     
+            //     await healthMeasurementRepository.CreateMongoHealthMeasurementAsync(mongoHealthMeasurement);
+            // }
+
+            // await _redisCache.C
+            // await _redisCache.SetStringAsync(patientId, stringPayload);
         });
 
         return mqttClient;

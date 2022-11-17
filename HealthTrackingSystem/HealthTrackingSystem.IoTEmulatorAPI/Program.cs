@@ -22,7 +22,7 @@ builder.Host.UseSerilog((context, config) => config
 builder.Services.AddSingleton<IIotPublishersPool, MqttPublishersPool>();
 builder.Services.AddHostedService<IoTPublishersHostedService>();
 
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>

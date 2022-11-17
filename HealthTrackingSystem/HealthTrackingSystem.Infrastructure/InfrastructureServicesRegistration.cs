@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net;
+using System.Reflection;
 using HealthTrackingSystem.Application.Interfaces.Infrastructure;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace HealthTrackingSystem.Infrastructure;
 
@@ -34,6 +36,9 @@ public static class InfrastructureServicesRegistration
             .AddRoleManager<RoleManager<AppRole>>()
             .AddUserManager<UserManager<AppUser>>();
         
+        services.AddScoped<IHealthMeasurementsContext, HealthMeasurementsContext>();
+        services.AddScoped<IMongoHealthMeasurementRepository, MongoHealthMeasurementRepository>();
+        
         services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
         services.AddScoped<IHospitalRepository, HospitalRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
@@ -42,6 +47,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IPatientCaretakerRepository, PatientCaretakerRepository>();
         
         services.AddScoped<IIdentityInitializer, IdentityInitializer>();
+        services.AddScoped<ICacheToDbDataTransferService, CacheToDbDataTransferService>();
         services.AddScoped<ISignInService, SignInService>();
         services.AddScoped<JwtHandler>();
         //
@@ -49,6 +55,14 @@ public static class InfrastructureServicesRegistration
         // services.AddTransient<IEmailService, EmailService>();
 
         services.AddSingleton<IIotSubscribersPool, MqttSubscribersPool>();
+
+        var redisIp = configuration.GetValue<string>("CacheSettings:Ip"); 
+        var redisPort = configuration.GetValue<string>("CacheSettings:Port"); 
+        var multiplexer = ConnectionMultiplexer.Connect(
+            new ConfigurationOptions{
+                EndPoints = { redisIp, redisPort }                
+            });
+        services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 
         return services;
     }

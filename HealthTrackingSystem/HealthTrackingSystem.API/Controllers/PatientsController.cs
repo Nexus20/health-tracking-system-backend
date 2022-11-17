@@ -2,6 +2,7 @@ using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Patients;
 using HealthTrackingSystem.Application.Models.Results.Patients;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace HealthTrackingSystem.API.Controllers
 {
@@ -10,10 +11,12 @@ namespace HealthTrackingSystem.API.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly IPatientService _patientService;
+        private readonly IConnectionMultiplexer _redis;
 
-        public PatientsController(IPatientService patientService)
+        public PatientsController(IPatientService patientService, IConnectionMultiplexer redis)
         {
             _patientService = patientService;
+            _redis = redis;
         }
 
         [HttpGet("{id}", Name = "GetPatientById")]
@@ -22,6 +25,14 @@ namespace HealthTrackingSystem.API.Controllers
         {
             var patient = await _patientService.GetByIdAsync(id);
             return Ok(patient);
+        }
+        
+        [HttpGet("{id}/measurements", Name = "GetMeasurementsById")]
+        [ProducesResponseType(typeof(PatientResult), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMeasurementsById(string id)
+        {
+            var result = await _redis.GetDatabase().SetMembersAsync($"patient:{id}"); 
+            return Ok(result);
         }
     
         [HttpGet(Name = "GetPatients")]

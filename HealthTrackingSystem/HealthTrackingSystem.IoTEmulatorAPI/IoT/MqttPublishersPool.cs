@@ -119,7 +119,8 @@ public class MqttPublishersPool : IIotPublishersPool
         var heartRateDto = new HealthMeasurementDto()
         {
             Ecg = random.NextDouble() * 1000,
-            HeartRate = random.Next(50, 101)
+            HeartRate = random.Next(50, 101),
+            DateTime = DateTime.UtcNow
         };
 
         return JsonConvert.SerializeObject(heartRateDto);
