@@ -1,4 +1,8 @@
-﻿using HealthTrackingSystem.Application.Mqtt;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using HealthTrackingSystem.Application.Mqtt;
+using Microsoft.Extensions.Hosting;
 using ILogger = Serilog.ILogger;
 
 namespace HealthTrackingSystem.API.HostedServices;

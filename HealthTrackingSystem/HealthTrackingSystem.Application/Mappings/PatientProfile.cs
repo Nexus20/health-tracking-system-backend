@@ -12,6 +12,10 @@ public class PatientProfile : Profile
         CreateMap<CreatePatientRequest, Patient>()
             .ForMember(x => x.User, o => o.MapFrom(s => s));
         CreateMap<CreatePatientRequest, User>();
+        
+        CreateMap<UpdatePatientRequest, Patient>()
+            .ForMember(x => x.User, o => o.MapFrom(s => s));
+        CreateMap<UpdatePatientRequest, User>();
 
         CreateMap<Patient, PatientResult>()
             .ForMember(x => x.BirthDate, o => o.MapFrom(s => s.User.BirthDate))

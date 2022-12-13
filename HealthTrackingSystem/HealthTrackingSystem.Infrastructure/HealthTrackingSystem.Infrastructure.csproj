@@ -10,13 +10,16 @@
         <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.11">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.11">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -25,6 +28,11 @@
     <ItemGroup>
       <ProjectReference Include="..\HealthTrackingSystem.Application\HealthTrackingSystem.Application.csproj" />
       <ProjectReference Include="..\HealthTrackingSystem.Domain\HealthTrackingSystem.Domain.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Compile Remove="Migrations\20221202211054_Test20.cs" />
+      <Compile Remove="Migrations\20221202211054_Test20.Designer.cs" />
     </ItemGroup>
 
 </Project>

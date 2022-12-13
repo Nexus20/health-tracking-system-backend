@@ -2,7 +2,7 @@
 
 namespace HealthTrackingSystem.Application.Interfaces.Persistent;
 
-public interface IHospitalRepository : IAsyncRepository<Hospital>
+public interface IHospitalRepository : IRepository<Hospital>
 {
     
 }

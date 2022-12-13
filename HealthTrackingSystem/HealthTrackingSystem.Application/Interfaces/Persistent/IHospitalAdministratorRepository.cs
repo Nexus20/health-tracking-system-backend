@@ -2,7 +2,7 @@
 
 namespace HealthTrackingSystem.Application.Interfaces.Persistent;
 
-public interface IHospitalAdministratorRepository : IAsyncRepository<HospitalAdministrator>
+public interface IHospitalAdministratorRepository : IRepository<HospitalAdministrator>
 {
     Task AddAsync(HospitalAdministrator hospitalAdministratorEntity, User userEntity, string password);
 }

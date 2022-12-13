@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 using HealthTrackingSystem.Application.Interfaces.Infrastructure;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
@@ -39,7 +38,7 @@ public static class InfrastructureServicesRegistration
         services.AddScoped<IHealthMeasurementsContext, HealthMeasurementsContext>();
         services.AddScoped<IMongoHealthMeasurementRepository, MongoHealthMeasurementRepository>();
         
-        services.AddScoped(typeof(IAsyncRepository<>), typeof(RepositoryBase<>));
+        services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
         services.AddScoped<IHospitalRepository, HospitalRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IPatientRepository, PatientRepository>();

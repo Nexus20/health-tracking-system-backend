@@ -1,19 +1,22 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Patients;
 using HealthTrackingSystem.Application.Models.Results.Patients;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 
 namespace HealthTrackingSystem.API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class PatientsController : ControllerBase
+    public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
         private readonly IConnectionMultiplexer _redis;
 
-        public PatientsController(IPatientService patientService, IConnectionMultiplexer redis)
+        public PatientController(IPatientService patientService, IConnectionMultiplexer redis)
         {
             _patientService = patientService;
             _redis = redis;
@@ -62,14 +65,18 @@ namespace HealthTrackingSystem.API.Controllers
 
         // PUT: api/Patients/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] UpdatePatientRequest request)
         {
+            var result = await _patientService.UpdateAsync(id, request);
+            return Ok(result);
         }
 
         // DELETE: api/Patients/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            await _patientService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

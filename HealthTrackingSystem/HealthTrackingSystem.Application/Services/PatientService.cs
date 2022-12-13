@@ -66,14 +66,27 @@ public class PatientService : IPatientService
         return result;
     }
 
-    public Task<PatientResult> UpdateAsync(UpdatePatientRequest request)
+    public async Task<PatientResult> UpdateAsync(string id, UpdatePatientRequest request)
     {
-        throw new NotImplementedException();
+        var patientToUpdate = await _patientRepository.GetByIdAsync(id);
+        
+        if(patientToUpdate == null)
+            throw new NotFoundException($"Patient with id \"{id}\" not found");
+
+        _mapper.Map(request, patientToUpdate);
+        await _patientRepository.UpdateAsync(patientToUpdate);
+        var result = _mapper.Map<Patient, PatientResult>(patientToUpdate); 
+        return result;
     }
 
-    public Task DeleteAsync(string id)
+    public async Task DeleteAsync(string id)
     {
-        throw new NotImplementedException();
+        var patientToDelete = await _patientRepository.GetByIdAsync(id);
+        
+        if(patientToDelete == null)
+            throw new NotFoundException($"Patient with id \"{id}\" not found");
+
+        await _patientRepository.DeleteAsync(patientToDelete);
     }
 
     public async Task CreateIotDeviceSubscriberForPatientAsync(string id)

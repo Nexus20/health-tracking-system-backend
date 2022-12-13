@@ -7,6 +7,11 @@ public class NotFoundException : ApplicationException
     {
         
     }
+
+    public NotFoundException(string entityTypeName, object key) : base($"Entity {entityTypeName} with key {key} not found")
+    {
+        
+    }
     
     public NotFoundException(string message) : base(message)
     {

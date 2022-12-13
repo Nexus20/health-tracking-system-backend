@@ -22,6 +22,22 @@ public class DoctorRepository : RepositoryBase<Doctor>, IDoctorRepository
         _userManager = userManager;
     }
 
+    public override async Task DeleteAsync(Doctor entity)
+    {
+        await using var transaction = await DbContext.Database.BeginTransactionAsync();
+        try
+        {
+            DbContext.DomainUsers.Remove(entity.User);
+            DbContext.Doctors.Remove(entity);
+            await DbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync();
+        }
+    }
+
     public async Task AddAsync(Doctor doctorEntity, User userEntity, string password)
     {
         await using var transaction = await DbContext.Database.BeginTransactionAsync();
@@ -51,7 +67,7 @@ public class DoctorRepository : RepositoryBase<Doctor>, IDoctorRepository
         catch (Exception e)
         {
             await transaction.RollbackAsync();
-            _logger.LogError("Error while creating a new doctor request: {EMessage}", e.Message);
+            _logger.LogError("Error while creating a new doctor: {EMessage}", e.Message);
         }
     }
 }

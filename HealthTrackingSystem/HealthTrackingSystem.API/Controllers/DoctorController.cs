@@ -1,17 +1,20 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Doctors;
 using HealthTrackingSystem.Application.Models.Results.Doctors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class DoctorsController : ControllerBase
+    public class DoctorController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
 
-        public DoctorsController(IDoctorService doctorService)
+        public DoctorController(IDoctorService doctorService)
         {
             _doctorService = doctorService;
         }
@@ -23,7 +26,7 @@ namespace HealthTrackingSystem.API.Controllers
             var doctor = await _doctorService.GetByIdAsync(id);
             return Ok(doctor);
         }
-    
+
         [HttpGet(Name = "GetDoctors")]
         [ProducesResponseType(typeof(List<DoctorResult>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<DoctorResult>>> Get([FromQuery]GetDoctorsRequest request)
@@ -43,14 +46,18 @@ namespace HealthTrackingSystem.API.Controllers
 
         // PUT: api/Doctors/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] UpdateDoctorRequest request)
         {
+            var result = await _doctorService.UpdateAsync(id, request);
+            return Ok(result);
         }
 
         // DELETE: api/Doctors/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            await _doctorService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

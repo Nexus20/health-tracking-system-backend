@@ -57,23 +57,34 @@ public class DoctorService : IDoctorService
         if (doctorExists)
             throw new ValidationException("Doctor with such parameters already exists");
         
-        // var userEntity = _mapper.Map<CreateDoctorRequest, User>(request);
         var doctorEntity = _mapper.Map<CreateDoctorRequest, Doctor>(request);
-        // doctorEntity.UserId = userEntity.Id;
         await _doctorRepository.AddAsync(doctorEntity, doctorEntity.User, request.Password);
         _logger.Information("New Doctor {@Entity} was created successfully", doctorEntity);
         var result = _mapper.Map<Doctor, DoctorResult>(doctorEntity); 
         return result;
     }
 
-    public Task<DoctorResult> UpdateAsync(UpdateDoctorRequest request)
+    public async Task<DoctorResult> UpdateAsync(string id, UpdateDoctorRequest request)
     {
-        throw new NotImplementedException();
+        var doctorToUpdate = await _doctorRepository.GetByIdAsync(id);
+        
+        if(doctorToUpdate == null)
+            throw new NotFoundException($"Doctor with id \"{id}\" not found");
+
+        _mapper.Map(request, doctorToUpdate);
+        await _doctorRepository.UpdateAsync(doctorToUpdate);
+        var result = _mapper.Map<Doctor, DoctorResult>(doctorToUpdate); 
+        return result;
     }
 
-    public Task DeleteAsync(string id)
+    public async Task DeleteAsync(string id)
     {
-        throw new NotImplementedException();
+        var doctorToDelete = await _doctorRepository.GetByIdAsync(id);
+        
+        if(doctorToDelete == null)
+            throw new NotFoundException($"Doctor with id \"{id}\" not found");
+
+        await _doctorRepository.DeleteAsync(doctorToDelete);
     }
     
     private Expression<Func<Doctor, bool>>? CreateFilterPredicate(GetDoctorsRequest request)

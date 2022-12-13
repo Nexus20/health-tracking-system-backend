@@ -1,17 +1,20 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.HospitalAdministrators;
 using HealthTrackingSystem.Application.Models.Results.HospitalAdministrators;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class HospitalAdministratorsController : ControllerBase
+    public class HospitalAdministratorController : ControllerBase
     {
         private readonly IHospitalAdministratorService _hospitalAdministratorService;
 
-        public HospitalAdministratorsController(IHospitalAdministratorService hospitalAdministratorService)
+        public HospitalAdministratorController(IHospitalAdministratorService hospitalAdministratorService)
         {
             _hospitalAdministratorService = hospitalAdministratorService;
         }

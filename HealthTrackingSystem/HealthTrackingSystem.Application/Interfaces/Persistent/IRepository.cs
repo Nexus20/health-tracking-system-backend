@@ -4,15 +4,10 @@ using HealthTrackingSystem.Domain.Entities.Abstract;
 
 namespace HealthTrackingSystem.Application.Interfaces.Persistent;
 
-public interface IAsyncRepository<TEntity> where TEntity : BaseEntity
+public interface IRepository<TEntity> where TEntity : BaseEntity
 {
     Task<List<TEntity>> GetAllAsync();
     Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate);
-
-    Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        string? includeString = null,
-        bool disableTracking = true);
 
     Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,

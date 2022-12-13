@@ -18,7 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string, 
     public DbSet<HospitalAdministrator> HospitalAdministrators { get; set; }
     public DbSet<HealthMeasurement> HealthMeasurements { get; set; }
     public DbSet<PatientCaretaker> PatientCaretakers { get; set; }
-    
+
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
         if (!Database.IsInMemory())

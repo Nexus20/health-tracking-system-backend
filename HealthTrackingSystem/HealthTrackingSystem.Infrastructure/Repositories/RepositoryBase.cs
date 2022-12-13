@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HealthTrackingSystem.Infrastructure.Repositories;
 
-public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity : BaseEntity
+public class RepositoryBase<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
     protected readonly IMapper Mapper;
     protected readonly ApplicationDbContext DbContext;
@@ -31,22 +31,6 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
             return GetAllAsync();
 
         return DbContext.Set<TEntity>().Where(predicate).ToListAsync();
-    }
-
-    public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string? includeString = null,
-        bool disableTracking = true)
-    {
-        IQueryable<TEntity> query = DbContext.Set<TEntity>();
-        if (disableTracking) query = query.AsNoTracking();
-
-        if (!string.IsNullOrWhiteSpace(includeString)) query = query.Include(includeString);
-
-        if (predicate != null) query = query.Where(predicate);
-
-        if (orderBy != null)
-            return orderBy(query).ToListAsync();
-        return query.ToListAsync();
     }
 
     public Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? predicate = null,
@@ -122,7 +106,7 @@ public class RepositoryBase<TEntity> : IAsyncRepository<TEntity> where TEntity :
         await DbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(TEntity entity)
+    public virtual async Task DeleteAsync(TEntity entity)
     {
         DbContext.Set<TEntity>().Remove(entity);
         await DbContext.SaveChangesAsync();

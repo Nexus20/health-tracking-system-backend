@@ -17,6 +17,7 @@ public static class ApplicationServicesRegistration
         services.AddScoped<IPatientService, PatientService>();
         services.AddScoped<IHospitalAdministratorService, HospitalAdministratorService>();
         services.AddScoped<IPatientCaretakerService, PatientCaretakerService>();
+        services.AddScoped<IUserService, UserService>();
         
         services.AddStackExchangeRedisCache(options =>
         {

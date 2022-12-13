@@ -11,7 +11,8 @@ public class HospitalProfile : Profile
     {
         CreateMap<Hospital, HospitalResult>();
         CreateMap<CreateHospitalRequest, Hospital>();
+        CreateMap<UpdateHospitalRequest, Hospital>();
         
-        CreateProjection<Hospital, HospitalResult>();
+        // CreateProjection<Hospital, HospitalResult>();
     }
 }
