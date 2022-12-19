@@ -12,6 +12,10 @@ public class HospitalAdministratorProfile : Profile
         CreateMap<CreateHospitalAdministratorRequest, HospitalAdministrator>()
             .ForMember(x => x.User, o => o.MapFrom(s => s));
         CreateMap<CreateHospitalAdministratorRequest, User>();
+        
+        CreateMap<UpdateHospitalAdministratorRequest, HospitalAdministrator>()
+            .ForMember(x => x.User, o => o.MapFrom(s => s));
+        CreateMap<UpdateHospitalAdministratorRequest, User>();
 
         CreateMap<HospitalAdministrator, HospitalAdministratorResult>()
             .ForMember(x => x.BirthDate, o => o.MapFrom(s => s.User.BirthDate))

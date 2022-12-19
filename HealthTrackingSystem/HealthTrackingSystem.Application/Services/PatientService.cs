@@ -4,6 +4,7 @@ using HealthTrackingSystem.Application.Exceptions;
 using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Patients;
+using HealthTrackingSystem.Application.Models.Results.PatientCaretakers;
 using HealthTrackingSystem.Application.Models.Results.Patients;
 using HealthTrackingSystem.Application.Mqtt;
 using HealthTrackingSystem.Domain.Entities;
@@ -17,14 +18,16 @@ public class PatientService : IPatientService
     private readonly IMapper _mapper;
     private readonly Serilog.ILogger _logger;
     private readonly IIotSubscribersPool _iotSubscribersPool;
+    private readonly IDoctorRepository _doctorRepository;
 
-    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository, IIotSubscribersPool iotSubscribersPool)
+    public PatientService(IPatientRepository patientRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository, IIotSubscribersPool iotSubscribersPool, IDoctorRepository doctorRepository)
     {
         _patientRepository = patientRepository;
         _mapper = mapper;
         _logger = logger;
         _hospitalRepository = hospitalRepository;
         _iotSubscribersPool = iotSubscribersPool;
+        _doctorRepository = doctorRepository;
     }
 
     public async Task<PatientResult> GetByIdAsync(string id)
@@ -58,7 +61,13 @@ public class PatientService : IPatientService
 
         if (patientExists)
             throw new ValidationException("Patient with such parameters already exists");
-        
+
+        if (!string.IsNullOrWhiteSpace(request.DoctorId))
+        {
+            if (!await _doctorRepository.ExistsAsync(x => x.Id == request.DoctorId))
+                throw new ValidationException($"Doctor with id {request.DoctorId} doesn't exist");
+        }
+
         var patientEntity = _mapper.Map<CreatePatientRequest, Patient>(request);
         await _patientRepository.AddAsync(patientEntity, patientEntity.User, request.Password);
         _logger.Information("New Patient {@Entity} was created successfully", patientEntity);
@@ -94,6 +103,36 @@ public class PatientService : IPatientService
         _iotSubscribersPool.AddNewSubscriber(id);
         await _iotSubscribersPool.ConnectOneAsync(id);
         _logger.Information("IoT device subscriber for patient {Id} connected successfully", id);
+    }
+
+    public async Task<string> AddDoctorToPatientAsync(string id, AddDoctorToPatientRequest request)
+    {
+        var patientToUpdate = await _patientRepository.GetByIdAsync(id);
+        
+        if(patientToUpdate == null)
+            throw new NotFoundException($"Patient with id \"{id}\" not found");
+
+        if (!await _doctorRepository.ExistsAsync(x => x.Id == request.DoctorId))
+            throw new ValidationException($"Doctor with id \"{request.DoctorId}\" not found");
+
+        patientToUpdate.DoctorId = request.DoctorId;
+        await _patientRepository.UpdateAsync(patientToUpdate);
+        _logger.Information("Doctor {@DoctorId} has been added to patient {@PatientId} successfully", request.DoctorId, id);
+        return request.DoctorId;
+    }
+
+    public async Task<PatientCaretakerResult?> GetPatientCaretakerAsync(string id)
+    {
+        var patient = await _patientRepository.GetByIdAsync(id);
+        
+        if(patient == null)
+            throw new NotFoundException($"Patient with id \"{id}\" not found");
+
+        if (patient.PatientCaretaker == null)
+            return null;
+
+        var result = _mapper.Map<PatientCaretaker, PatientCaretakerResult>(patient.PatientCaretaker);
+        return result;
     }
 
     private Expression<Func<Patient, bool>>? CreateFilterPredicate(GetPatientsRequest request)

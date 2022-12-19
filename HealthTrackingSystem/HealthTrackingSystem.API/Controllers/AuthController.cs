@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Auth;
 using HealthTrackingSystem.Application.Models.Results.Auth;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers

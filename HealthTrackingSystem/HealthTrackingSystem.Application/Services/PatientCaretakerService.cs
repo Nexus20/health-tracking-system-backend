@@ -5,6 +5,7 @@ using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.PatientCaretakers;
 using HealthTrackingSystem.Application.Models.Results.PatientCaretakers;
+using HealthTrackingSystem.Application.Models.Results.Patients;
 using HealthTrackingSystem.Domain.Entities;
 
 namespace HealthTrackingSystem.Application.Services;
@@ -64,9 +65,21 @@ public class PatientCaretakerService : IPatientCaretakerService
         var patientCaretakerEntity = _mapper.Map<CreatePatientCaretakerRequest, PatientCaretaker>(request);
         await _patientCaretakerRepository.AddAsync(patientCaretakerEntity, request.Password, request.PatientsIds);
         
-        _logger.Information("New PatientCaretaker {@Entity} was created successfully", patientCaretakerEntity);
+        // _logger.Information("New PatientCaretaker {@Entity} was created successfully", patientCaretakerEntity);
         
         var result = _mapper.Map<PatientCaretaker, PatientCaretakerResult>(patientCaretakerEntity); 
+        return result;
+    }
+    
+    public async Task<List<PatientResult>> GetPatientsAsync(string id)
+    {
+        if (!await _patientCaretakerRepository.ExistsAsync(x => x.Id == id))
+            throw new NotFoundException(nameof(PatientCaretaker), id);
+        
+        var source = await _patientRepository
+            .GetAsync(x => x.PatientCaretakerId == id, disableTracking: false);
+
+        var result = _mapper.Map<List<Patient>, List<PatientResult>>(source);
         return result;
     }
 
@@ -79,7 +92,7 @@ public class PatientCaretakerService : IPatientCaretakerService
     {
         throw new NotImplementedException();
     }
-    
+
     private Expression<Func<PatientCaretaker, bool>>? CreateFilterPredicate(GetPatientCaretakersRequest request)
     {
         Expression<Func<PatientCaretaker, bool>>? predicate = null;

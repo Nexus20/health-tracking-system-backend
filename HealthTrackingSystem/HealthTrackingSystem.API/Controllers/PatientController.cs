@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Patients;
 using HealthTrackingSystem.Application.Models.Results.Patients;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 
@@ -68,6 +65,20 @@ namespace HealthTrackingSystem.API.Controllers
         public async Task<IActionResult> Put(string id, [FromBody] UpdatePatientRequest request)
         {
             var result = await _patientService.UpdateAsync(id, request);
+            return Ok(result);
+        }
+
+        [HttpPatch("{id}/add-doctor")]
+        public async Task<IActionResult> AddDoctorToPatient(string id, [FromBody] AddDoctorToPatientRequest request)
+        {
+            var result = await _patientService.AddDoctorToPatientAsync(id, request);
+            return Ok(new {doctorId = result});
+        }
+
+        [HttpGet("{id}/caretaker")]
+        public async Task<IActionResult> GetPatientCaretaker(string id)
+        {
+            var result = await _patientService.GetPatientCaretakerAsync(id);
             return Ok(result);
         }
 

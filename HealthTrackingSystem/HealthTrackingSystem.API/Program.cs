@@ -1,11 +1,9 @@
 using HealthTrackingSystem.API;
 using HealthTrackingSystem.API.Extensions;
+using HealthTrackingSystem.API.Hubs;
 using HealthTrackingSystem.API.Middlewares;
 using HealthTrackingSystem.Application;
 using HealthTrackingSystem.Infrastructure;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -20,7 +18,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddCors(o =>
-    o.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+    o.AddPolicy("AllowAll", b => b
+        .WithOrigins("http://localhost:4200")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+    ));
 
 builder.Host.UseSerilog((context, config) => config
     .WriteTo.Console()
@@ -49,6 +52,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<HealthMeasurementsHub>("/health-measurements");
 
 app.SetupIdentity();
 

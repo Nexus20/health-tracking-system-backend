@@ -1,10 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using HealthTrackingSystem.Application.Interfaces.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using HealthTrackingSystem.Application.Interfaces.Infrastructure;
 
 namespace HealthTrackingSystem.API.HostedServices;
 

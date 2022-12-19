@@ -1,13 +1,15 @@
 using HealthTrackingSystem.Application.Models.Requests.Doctors;
 using HealthTrackingSystem.Application.Models.Results.Doctors;
+using HealthTrackingSystem.Application.Models.Results.Patients;
 
 namespace HealthTrackingSystem.Application.Interfaces.Services;
 
 public interface IDoctorService
 {
-    public Task<DoctorResult> GetByIdAsync(string id);
-    public Task<List<DoctorResult>> GetAsync(GetDoctorsRequest request);
-    public Task<DoctorResult> CreateAsync(CreateDoctorRequest request);
-    public Task<DoctorResult> UpdateAsync(string id, UpdateDoctorRequest request);
-    public Task DeleteAsync(string id);
+    Task<DoctorResult> GetByIdAsync(string id);
+    Task<List<DoctorResult>> GetAsync(GetDoctorsRequest request);
+    Task<DoctorResult> CreateAsync(CreateDoctorRequest request);
+    Task<DoctorResult> UpdateAsync(string id, UpdateDoctorRequest request);
+    Task DeleteAsync(string id);
+    Task<List<PatientResult>> GetPatientsAsync(string id);
 }

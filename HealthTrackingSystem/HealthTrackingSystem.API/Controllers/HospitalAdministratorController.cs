@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.HospitalAdministrators;
 using HealthTrackingSystem.Application.Models.Results.HospitalAdministrators;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers
@@ -46,8 +43,10 @@ namespace HealthTrackingSystem.API.Controllers
 
         // PUT: api/HospitalAdministrators/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(string id, [FromBody] UpdateHospitalAdministratorRequest request)
         {
+            var result = await _hospitalAdministratorService.UpdateAsync(id, request);
+            return Ok(result);
         }
 
         // DELETE: api/HospitalAdministrators/5

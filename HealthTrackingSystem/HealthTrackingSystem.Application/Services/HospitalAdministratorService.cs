@@ -66,9 +66,17 @@ public class HospitalAdministratorService : IHospitalAdministratorService
         return result;
     }
 
-    public Task<HospitalAdministratorResult> UpdateAsync(UpdateHospitalAdministratorRequest request)
+    public async Task<HospitalAdministratorResult> UpdateAsync(string id, UpdateHospitalAdministratorRequest request)
     {
-        throw new NotImplementedException();
+        var hospitalAdministratorToUpdate = await _hospitalAdministratorRepository.GetByIdAsync(id);
+        
+        if(hospitalAdministratorToUpdate == null)
+            throw new NotFoundException($"Doctor with id \"{id}\" not found");
+
+        _mapper.Map(request, hospitalAdministratorToUpdate);
+        await _hospitalAdministratorRepository.UpdateAsync(hospitalAdministratorToUpdate);
+        var result = _mapper.Map<HospitalAdministrator, HospitalAdministratorResult>(hospitalAdministratorToUpdate); 
+        return result;
     }
 
     public Task DeleteAsync(string id)

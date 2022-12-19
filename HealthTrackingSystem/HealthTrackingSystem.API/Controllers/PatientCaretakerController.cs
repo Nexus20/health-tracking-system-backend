@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.PatientCaretakers;
 using HealthTrackingSystem.Application.Models.Results.PatientCaretakers;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers
@@ -42,6 +39,13 @@ namespace HealthTrackingSystem.API.Controllers
             var result = await _patientCaretakerService.CreateAsync(request);
 
             return StatusCode(StatusCodes.Status201Created, result);
+        }
+        
+        [HttpGet("{id}/patients", Name = "Get patients of this caretaker")]
+        public async Task<IActionResult> GetPatients(string id)
+        {
+            var patients = await _patientCaretakerService.GetPatientsAsync(id);
+            return Ok(patients);
         }
 
         // PUT: api/PatientCaretakers/5

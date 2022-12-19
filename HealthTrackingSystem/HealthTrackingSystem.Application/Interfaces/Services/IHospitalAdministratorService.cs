@@ -8,6 +8,6 @@ public interface IHospitalAdministratorService
     public Task<HospitalAdministratorResult> GetByIdAsync(string id);
     public Task<List<HospitalAdministratorResult>> GetAsync(GetHospitalAdministratorsRequest request);
     public Task<HospitalAdministratorResult> CreateAsync(CreateHospitalAdministratorRequest request);
-    public Task<HospitalAdministratorResult> UpdateAsync(UpdateHospitalAdministratorRequest request);
+    public Task<HospitalAdministratorResult> UpdateAsync(string id, UpdateHospitalAdministratorRequest request);
     public Task DeleteAsync(string id);
 }

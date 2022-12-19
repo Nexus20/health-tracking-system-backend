@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using HealthTrackingSystem.Application.Interfaces.Services;
+﻿using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Hospitals;
 using HealthTrackingSystem.Application.Models.Results.Hospitals;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers;

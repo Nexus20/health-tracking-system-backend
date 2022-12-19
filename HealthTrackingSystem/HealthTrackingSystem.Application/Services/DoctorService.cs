@@ -5,6 +5,7 @@ using HealthTrackingSystem.Application.Interfaces.Persistent;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Doctors;
 using HealthTrackingSystem.Application.Models.Results.Doctors;
+using HealthTrackingSystem.Application.Models.Results.Patients;
 using HealthTrackingSystem.Domain.Entities;
 
 namespace HealthTrackingSystem.Application.Services;
@@ -15,13 +16,15 @@ public class DoctorService : IDoctorService
     private readonly IHospitalRepository _hospitalRepository;
     private readonly IMapper _mapper;
     private readonly Serilog.ILogger _logger;
+    private readonly IPatientRepository _patientRepository;
 
-    public DoctorService(IDoctorRepository doctorRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository)
+    public DoctorService(IDoctorRepository doctorRepository, IMapper mapper, Serilog.ILogger logger, IHospitalRepository hospitalRepository, IPatientRepository patientRepository)
     {
         _doctorRepository = doctorRepository;
         _mapper = mapper;
         _logger = logger;
         _hospitalRepository = hospitalRepository;
+        _patientRepository = patientRepository;
     }
 
     public async Task<DoctorResult> GetByIdAsync(string id)
@@ -86,7 +89,19 @@ public class DoctorService : IDoctorService
 
         await _doctorRepository.DeleteAsync(doctorToDelete);
     }
-    
+
+    public async Task<List<PatientResult>> GetPatientsAsync(string id)
+    {
+        if (!await _doctorRepository.ExistsAsync(x => x.Id == id))
+            throw new NotFoundException(nameof(Doctor), id);
+        
+        var source = await _patientRepository
+            .GetAsync(x => x.DoctorId == id, disableTracking: false);
+
+        var result = _mapper.Map<List<Patient>, List<PatientResult>>(source);
+        return result;
+    }
+
     private Expression<Func<Doctor, bool>>? CreateFilterPredicate(GetDoctorsRequest request)
     {
         Expression<Func<Doctor, bool>>? predicate = null;

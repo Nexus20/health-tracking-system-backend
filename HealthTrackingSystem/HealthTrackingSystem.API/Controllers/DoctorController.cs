@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using HealthTrackingSystem.Application.Interfaces.Services;
 using HealthTrackingSystem.Application.Models.Requests.Doctors;
 using HealthTrackingSystem.Application.Models.Results.Doctors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTrackingSystem.API.Controllers
@@ -50,6 +47,13 @@ namespace HealthTrackingSystem.API.Controllers
         {
             var result = await _doctorService.UpdateAsync(id, request);
             return Ok(result);
+        }
+        
+        [HttpGet("{id}/patients", Name = "Get patients of this doctor")]
+        public async Task<IActionResult> GetPatients(string id)
+        {
+            var patients = await _doctorService.GetPatientsAsync(id);
+            return Ok(patients);
         }
 
         // DELETE: api/Doctors/5

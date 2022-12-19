@@ -1,6 +1,4 @@
 ﻿using HealthTrackingSystem.Application.Interfaces.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace HealthTrackingSystem.API.Extensions;
 

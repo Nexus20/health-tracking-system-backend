@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using HealthTrackingSystem.Application.Exceptions;
-using Microsoft.AspNetCore.Http;
+﻿using HealthTrackingSystem.Application.Exceptions;
 
 namespace HealthTrackingSystem.API.Middlewares {
     public class ExceptionHandlingMiddleware {

@@ -11,6 +11,9 @@ public static class ApplicationServicesRegistration
     public static IServiceCollection AddApplicationServices(this IServiceCollection services,
         ConfigurationManager configuration)
     {
+        services.AddSingleton<EcgTimerManager>();
+        services.AddSingleton<HeartRateTimerManager>();
+        
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<IHospitalService, HospitalService>();
         services.AddScoped<IDoctorService, DoctorService>();

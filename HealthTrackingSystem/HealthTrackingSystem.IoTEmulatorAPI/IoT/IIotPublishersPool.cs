@@ -8,6 +8,5 @@ public interface IIotPublishersPool
     void AddNewPublisher(string patientId);
     Task ConnectOneAsync(string patientId);
     Task DisconnectOneAsync(string patientId);
-
     Task PublishAsync();
 }
